@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>indio by hijoem</title>
+		<meta name="description" content="Listen to your favourite Radio channel! From hijoem.github.io">
+		<meta name="theme-color" content="#00263b" />
+		<base href="https://indio.netlify.app/" target="_blank">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+		<link rel="manifest" href="site.webmanifest">
+		<link href="plyr.css" rel="stylesheet" />
+		<script src="polyfill.min.js"></script>
+		<script src="plyr.min.js"></script>
+		<script src="sw.js"></script>
+		<style type="text/css">
+		::-webkit-scrollbar {
+		width: 10px;
+		}
+		::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 5px #142850;
+		border-radius: 10px;
+		}
+		
+		::-webkit-scrollbar-thumb {
+		background: #00909e;
+		border-radius: 10px;
+		}
+		::-webkit-scrollbar-thumb:hover {
+		background: #00d2e6;
+		}
+		
+		body{
+			background-color: #00263b;
+			color: #00a1ab;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-rows: 170px auto;
+		}
+		header, main, footer {
+			margin: 5px auto;
+			display: -webkit-box;
+			display: flex;
+			max-width: 800px;
+			width: -webkit-fill-available;
+			text-align: -webkit-center;
+			flex-direction: column;
+		}
+		main {
+			overflow-y: auto;
+			height: 260px;
+			display: initial;
+		}
+		footer{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		a{
+			text-decoration: none;
+			color: #00a1ab;
+		}
+		header #search {
+			border: 1px solid #ff5200;
+			border-radius: 10px;
+			text-align: center;
+			width: 70%;
+			padding: 5px;
+			margin: 5px;
+			font-size: 1.5rem;
+			background: transparent;
+			font-family: 'Josefin Slab', serif;
+		}
+		#playerDiv {
+			margin: 5px;
+		}
+		#title{
+			font-size: x-large;
+		}
+		#showabout{
+			cursor: pointer;
+		}
+		.plyr__control{
+			color: #6f0000;
+		}
+		.plyr--audio .plyr__controls {
+			border-radius: 15px;
+			background: #00a1ab;
+		}
+		.tv-items {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		float: left;
+		width: 47%;
+		height: 90px;
+		cursor: pointer;
+		border-radius: 35px;
+		margin: 5px;
+		color: #00a1ab;
+		transition: transform .2s;
+		box-shadow: inset -5px -5px 4px 0px #ff5200;
+		}
+		.btn-items {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		float: left;
+		width: 22%;
+		height: 40px;
+		cursor: pointer;
+		border-radius: 10px;
+		margin: 5px;
+		color: #3f3f44;
+		background-color: #cceabb;
+		transition: transform .1s;
+		box-shadow: inset -5px -5px 4px 0px #fdcb9e;
+		}
+		.tv-items:hover {
+		transform: scale(1.05);
+		box-shadow: 4px 10px 7px 2px #142850;
+		}
+		@media screen and (min-width: 768px) {
+		body{
+		grid-template-rows: 240px auto;
+		}
+		.tv-items {
+		width: 31%;
+		}
+		#playerDiv {
+		}
+		main {
+			height: 400px;
+		}
+		}
+		@media screen and (min-width: 1200px) {
+		body{
+		grid-template-rows: 280px auto;
+		}
+		.tv-items {
+		width: 30.7%;
+		margin: 10px;
+		}
+		#playerDiv {
+		}
+		main {
+			height: 400px;
+		}
+		}
+		</style>
+		
+	</head>
+	<body>
+		<header>
+			<br>
+			<div id="title"><a href="/">indio</a>  by  <a href="https://hijoem.github.io">hijoem</a></div>
+			<p>Listen to your favourite radio channel online.</p>
+			<div><input id='search' type="text" placeholder='Search station name' autocomplete="off"/></div>
+			<div id="tabDiv"></div>
+			<div id="infoDiv"></div>
+		</header>
+		<main id="listItem">
+		</main>
+		<footer>
+			<div id="playerDiv">
+				<p id="nameDiv">Now listening: <strong>Prambors Bandung</strong></p>
+				<div class="container">
+					<audio crossorigin playsinline autoplay>
+						<source src="http://masima.rastream.com/masima-pramborsjakarta?" type="audio/mp3">
+					</audio>
+				</div>
+			</div>
+			<p id="showabout">hijoem 2020 (?)</p>
+		</footer>
+		<div id="about"></div>
+		<script type="text/javascript">
+		let all = [];
+		const player = new Plyr('audio', {});
+		window.player = player;
+		function setSource(src, ttl = "Online Radio"){
+			document.getElementById("nameDiv").innerHTML = `Now listening: <strong>${ttl}</strong>`;
+			player.source = {
+			type: 'audio',
+			title: ttl,
+			sources: src,
+			};
+		}
+		async function getResponse() {
+			const a = localStorage.getItem("indio-source");
+			if(a){
+			if (a.length > 10) {
+				const get = JSON.parse(a);
+				all = get.tree.value;
+				renderList(all);
+				setSource(all[18].url, all[18].name);
+			} else {
+				let fetchs = await fetch("https://gist.githubusercontent.com/eRQee/557f53e75f943391e21918233b5ee4b9/raw/79e15d3a01ed4c3b82c39be573d9e0c025d3cb7f/radio@driglu4it.json");
+				if (fetchs.ok) {
+					const get = await fetchs.json();
+					localStorage.setItem("indio-source", JSON.stringify(get));
+					all = get.tree.value;
+					renderList(all);
+					setSource(all[18].url, all[18].name);
+				} else {
+					alert("HTTP-Error: " + fetchs.status);
+				}
+			}
+			}
+			if (all.length < 2){
+				let fetchs = await fetch("https://indio.netlify.app/radio@driglu4it.json");
+				if (fetchs.ok) {
+					const get = await fetchs.json();
+					localStorage.setItem("indio-source", JSON.stringify(get));
+					all = get.tree.value;
+					renderList(all);
+					setSource(all[18].url, all[18].name);
+				} else {
+					alert("HTTP-Error: " + fetchs.status);
+				}
+			}
+		}
+		const renderList = stations => {
+			let a, b, i = this.value;
+			i = document.getElementById("listItem");
+			i.innerHTML = ``;
+			if(stations.length > 0){
+			document.getElementById("infoDiv").innerHTML = `Showing ${stations.length} stations found.`;
+			if (stations.length > 100){
+				document.getElementById("infoDiv").innerHTML = `Showing 100 from ${stations.length} stations found.`;
+			}
+			a = document.createElement("DIV");
+			let ind = 1;
+			stations.slice(0, 90).forEach(station => {
+				let b = document.createElement("DIV");
+				b.setAttribute("id", "tv-list" + ind);
+				b.setAttribute("class", "tv-items");
+				b.innerHTML += `<p>${ind}. <strong>${station.name}</strong></p>`;
+				b.innerHTML += "<input type='hidden' value='" + station.url + "'>";
+				b.addEventListener("click", function(e) {
+				setSource(station.url, station.name);
+				});
+				ind++;
+				i.appendChild(b);
+			});
+		} else {
+			document.getElementById("infoDiv").innerHTML = `No station found. Try type another keyword!`;
+		}
+		}
+		function search(query) {
+			let result = [];
+			const q = document.getElementById("search").value.toLowerCase();
+			all.forEach(station => {
+				if (station.name.toLowerCase().indexOf(q) > -1) {
+					result.push(station);
+				}
+			});
+			//renderlist(result);
+			return result;
+		}
+		function about(show = true) {
+		const about = document.getElementById("about");
+		if (!show) {
+		about.innerHTML = "";
+		} else {
+		about.innerHTML = "";
+		about.innerHTML = `
+		<style>
+		* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		}
+		.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: fixed;
+		z-index: 100;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgb(0,0,0);
+		background-color: rgba(0,0,0,0.8);
+		-webkit-animation-name: fadeIn;
+		-webkit-animation-duration: 0.4s;
+		animation-name: fadeIn;
+		animation-duration: 0.4s
+		}
+		#close {
+		cursor: pointer;
+		}
+		.center {
+		text-align: center;
+		margin: auto;
+		padding: 12px;
+		border-radius: 6px;
+		background-color: rgb(0,0,0);
+		background-color: rgba(0,0,0,0.9);
+		-webkit-animation-name: slideIn;
+		-webkit-animation-duration: 0.4s;
+		animation-name: slideIn;
+		animation-duration: 0.4s
+		}
+		@-webkit-keyframes slideIn {
+		from {bottom: -300px; opacity: 0}
+		to {bottom: 0; opacity: 1}
+		}
+		@keyframes slideIn {
+		from {bottom: -300px; opacity: 0}
+		to {bottom: 0; opacity: 1}
+		}
+		@-webkit-keyframes fadeIn {
+		from {opacity: 0}
+		to {opacity: 1}
+		}
+		@keyframes fadeIn {
+		from {opacity: 0}
+		to {opacity: 1}
+		}
+		</style>`;
+		about.innerHTML += `
+		<div class="container">
+			<div class="center"><br>
+				<h2>indio</h2>
+				<br>
+				<p>Radio streaming app!</p>
+				<p>Free from annoying ads!</p>
+				<br>
+				<p>Made with pure javascript and plyr.js</p>
+				<p>Radio stations from gist.github.com/eRQee</p>
+				<br>
+				<p>It's free, so don't expect everything will works</p>
+				<br>
+				<p>anyway, Enjoy!</p>
+				<br>
+				<br>
+				<p><a href="https://hijoem.github.io" target="_blank">> hijoem <</a></p>
+				<br>
+				<br>
+				<br>
+				<p id="close" class="close">close</p>
+			</div>
+		</div>
+		`;
+		about.querySelector("#close").addEventListener("click", () => {
+		about.innerHTML = ``
+		});
+		}
+		}
+		getResponse();
+		document.getElementById("search").addEventListener("keyup", (val)=>{
+		renderList(search(val.srcElement.value));
+		});
+		document.getElementById("showabout").addEventListener("click", () => {
+		about(true);
+		});
+		if ('serviceWorker' in navigator) {
+		window.addEventListener('load', () => {
+		navigator.serviceWorker.register('sw.js');
+		});
+		}
+		</script>
+	</body>
+</html>

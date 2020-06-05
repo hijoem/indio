@@ -1,0 +1,69 @@
+{
+    "__comment__":  {
+        "description": "Playlist for Radio++ (Linuxmint Cinnamon Applet)",
+        "AppURL": "https://github.com/Driglu4it/Radio",
+        "FileLocation": "~/.cinnamon/configs/radio@driglu4it/radio@driglu4it.json"
+    },
+    "layout1": {
+        "type": "layout",
+        "pages": ["page1"],
+        "page1": {"type": "page", "title": "List of stations", "sections": ["section1"] },
+        "section1": {"type": "section", "title": "Radio", "keys": ["tree"] }
+    },
+    "tree": {
+        "type": "list",
+        "description": "List of stations",
+        "columns": [
+            {"id": "name", "title": "Title", "type": "string"},
+            {"id": "url", "title": "URL", "type": "string"},
+            {"id": "inc", "title": "Include of list", "type": "boolean"}
+        ],
+        "default": [
+            {"name": "Akustika", "url": "http://ic3.101.ru:8000/c16_34", "inc": false },
+            {"name": "Rock Hits", "url": "http://icecast.radiomaximum.cdnvideo.ru/st25.mp3", "inc": false },
+            {"name": "Hit FM", "url": "http://icecast.radiohitfm.cdnvideo.ru/hit.mp3", "inc": false },
+            {"name": "Chillout", "url": "http://ic7.101.ru:8000/c15_3", "inc": false }
+        ],
+        "value": [
+            {"name": "Andika Radio", "url": "https://stream2.andikafm.com:1057/andikafm;", "inc": true },
+            {"name": "Ardan Radio", "url": "http://listento.ardanradio.com:1059/;", "inc": true },
+            {"name": "Attaqwa FM", "url": "http://103.28.148.18:8840/;", "inc": true },
+            {"name": "Cosmopolitan", "url": "http://cloudstreaming.mramedia.com:8002/live;", "inc": true },
+            {"name": "Elshinta", "url": "http://202.137.4.147:8000/;", "inc": true },
+            {"name": "FBI FM Bali", "url": "http://server.fbifm.com:9180/fbibaliradio;", "inc": true },
+            {"name": "Geronimo Jogja", "url": "http://live2.indostreamserver.com:8018/;", "inc": false },
+            {"name": "Global Radio", "url": "http://202.147.199.98/;stream.nsv", "inc": false },
+            {"name": "iRadio Bandung", "url": "http://cloudstreaming.mramedia.com:8005/live", "inc": true },
+            {"name": "Jak FM", "url": "http://streaming1.sim-indonesia.com:8000/jak", "inc": false },
+            {"name": "Kalimaya Bhaskara", "url": "http://stream.suararadio.com:8000/Malang_KalimayaBhaskara_mono", "inc": true },
+            {"name": "Kiss FM Semarang", "url": "http://103.28.148.18:8070/;stream.nsv", "inc": true },
+            {"name": "Kompas Sonora Jakarta", "url": "http://103.226.246.245/kompas-sonorajakarta", "inc": true },
+            {"name": "Malangkucecwara FM", "url": "http://202.164.218.22:8222/", "inc": true },
+            {"name": "MatrixFM Ponorogo", "url": "http://live.radiomatrixfm.com:8000/;", "inc": true },
+            {"name": "MQFM Bandung", "url": "http://radio.useetv.com/mqfm-aac", "inc": true },
+            {"name": "Oz Radio Bandung", "url": "http://45.64.97.211:1031/;stream.nsv", "inc": true },
+            {"name": "Pikiran Rakyat", "url": "http://prfm.pikiran-rakyat.com:8000/", "inc": true },
+            {"name": "Prambors Jakarta", "url": "http://masima.rastream.com/masima-pramborsjakarta?", "inc": false },
+            {"name": "Prambors Bandung", "url": "http://masima.rastream.com/masima-pramborsbandung?", "inc": true },
+            {"name": "Radio Muslim", "url": "http://live.radiomuslim.com/;stream/1/;", "inc": false },
+            {"name": "RadioQu Cirebon", "url": "http://live.radioquonline.com:8199/;", "inc": false },
+            {"name": "Rama FM Bandung", "url": "http://rama-fm.simaya.net.id:8800/;", "inc": true },
+            {"name": "Rodja Bandung", "url": "http://live.radiorodjabandung.com/;stream.nsv", "inc": true },
+            {"name": "RRI Pro 1 Bandung", "url": "http://pvstreaming.rri.co.id:9015/web-rribandungpro1.mp3", "inc": true },
+            {"name": "RRI Pro 2 Bandung", "url": "http://pvstreaming.rri.co.id:9015/web-rribandungpro2.mp3", "inc": true },
+            {"name": "RRI Pro 1 Jakarta", "url": "http://pvstreaming.rri.co.id:9025/rrijakartapro1.mp3", "inc": true },
+            {"name": "RRI Pro 2 Jakarta", "url": "http://pvstreaming.rri.co.id:9025/rrijakartapro2.mp3", "inc": true },
+            {"name": "RRI Pro 3 Jakarta", "url": "http://pvstreaming.rri.co.id:9014/kbrn.mp3", "inc": true },
+            {"name": "RRI Pro 4 Jakarta", "url": "http://pvstreaming.rri.co.id:9025/rrijakartapro4.mp3", "inc": true },
+            {"name": "RRI Pro 1 Samarinda", "url": "http://streaming.rri.co.id:9116/rrisamarindapro1.mp3", "inc": true },
+            {"name": "Sindo Trijaya FM", "url": "http://202.147.199.101:8000/;stream.nsv", "inc": true },
+            {"name": "Smart FM Balikpapan", "url": "http://101.50.0.77:8000/balikpapan.aac", "inc": true },
+            {"name": "Suara Mahakam Samarinda", "url": "http://u.klikhost.com:8000/suara_mahakam", "inc": true },
+            {"name": "Suara Muslim Surabaya", "url": "http://radio.useetv.com:8024/;", "inc": false },
+            {"name": "Suara Quran", "url": "http://suaraquran.com:8030/;audio.mp3", "inc": false },
+            {"name": "Urban Radio Bandung", "url": "http://radio.melsa.net.id:8050/urban", "inc": true },
+            {"name": "Zora Radio", "url": "http://stream.arenastreaming.com:8018/zora", "inc": true }
+        ]
+    },
+    "__md5__": "a18eb3f7a212aa278adcba4ce5511d31"
+}
