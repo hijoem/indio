@@ -168,8 +168,8 @@
 			<div id="playerDiv">
 				<p id="nameDiv">Now listening: <strong>Prambors Bandung</strong></p>
 				<div class="container">
-					<audio crossorigin playsinline autoplay>
-						<source src="http://masima.rastream.com/masima-pramborsjakarta?" type="audio/mp3">
+					<audio id="player" crossorigin playsinline autoplay
+						src="https://masima.rastream.com/masima-pramborsjakarta?" type="audio/mp3">
 					</audio>
 				</div>
 			</div>
@@ -178,22 +178,30 @@
 		<div id="about"></div>
 		<script type="text/javascript">
 		let all = [];
+		let d = [];
 		const player = new Plyr('audio', {});
-		window.player = player;
-		function setSource(src, ttl = "Online Radio"){
+		//window.player = player;
+		function setSource(src, ttl = "Media", type = "audio"){
+			let a = src;
+			if(src.indexOf("tp://") > -1){
+				a = src.replace("tp://", "tps://");
+			}
 			document.getElementById("nameDiv").innerHTML = `Now listening: <strong>${ttl}</strong>`;
 			player.source = {
-			type: 'audio',
+			type: type,
 			title: ttl,
-			sources: src,
+			sources: a,
 			};
 		}
 		async function getResponse() {
 			const a = localStorage.getItem("indio-source");
-			if(a){
-			if (a.length > 10) {
+			if(a && a.length > 10){
 				const get = JSON.parse(a);
 				all = get.tree.value;
+				d =get.tree.default;
+				d.forEach(s => {
+					all.push(s);
+				});
 				renderList(all);
 				setSource(all[18].url, all[18].name);
 			} else {
@@ -202,24 +210,34 @@
 					const get = await fetchs.json();
 					localStorage.setItem("indio-source", JSON.stringify(get));
 					all = get.tree.value;
+					d =get.tree.default;
+					d.forEach(s => {
+						all.push(s);
+					});
 					renderList(all);
 					setSource(all[18].url, all[18].name);
 				} else {
 					alert("HTTP-Error: " + fetchs.status);
 				}
+			
 			}
+		}
+		async function checkAll(){
+		if (all.length < 2){
+			let fetchs = await fetch("radio@driglu4it.json");
+			if (fetchs.ok) {
+				const get = await fetchs.json();
+				localStorage.setItem("indio-source", JSON.stringify(get));
+				all = get.tree.value;
+				d =get.tree.default;
+				d.forEach(s => {
+					all.push(s);
+				});
+				renderList(all);
+				setSource(all[18].url, all[18].name);
+			} else {
+				alert("HTTP-Error: " + fetchs.status);
 			}
-			if (all.length < 2){
-				let fetchs = await fetch("https://indio.netlify.app/radio@driglu4it.json");
-				if (fetchs.ok) {
-					const get = await fetchs.json();
-					localStorage.setItem("indio-source", JSON.stringify(get));
-					all = get.tree.value;
-					renderList(all);
-					setSource(all[18].url, all[18].name);
-				} else {
-					alert("HTTP-Error: " + fetchs.status);
-				}
 			}
 		}
 		const renderList = stations => {
@@ -353,6 +371,7 @@
 		}
 		}
 		getResponse();
+		checkAll();
 		document.getElementById("search").addEventListener("keyup", (val)=>{
 		renderList(search(val.srcElement.value));
 		});
