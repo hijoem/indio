@@ -167,7 +167,7 @@
 		<footer>
 			<div id="playerDiv">
 				<p id="nameDiv">Now listening: <strong>Prambors Bandung</strong></p>
-				<div class="container">
+				<div id="mediaDiv">
 					<audio id="player" crossorigin playsinline autoplay
 						src="https://masima.rastream.com/masima-pramborsjakarta?" type="audio/mp3">
 					</audio>
@@ -175,23 +175,28 @@
 			</div>
 			<p id="showabout">hijoem 2020 (?)</p>
 		</footer>
-		<div id="about"></div>
+		<div id="aboutMe"></div>
 		<script type="text/javascript">
 		let all = [];
 		let d = [];
-		const player = new Plyr('audio', {});
 		//window.player = player;
-		function setSource(src, ttl = "Media", type = "audio"){
+		function setSource(src, ttl = "Media", type = "AUDIO"){
+			document.getElementById("nameDiv").innerHTML = `Now listening: <strong>${ttl}</strong>`;
 			let a = src;
 			if(src.indexOf("tp://") > -1){
 				a = src.replace("tp://", "tps://");
 			}
-			document.getElementById("nameDiv").innerHTML = `Now listening: <strong>${ttl}</strong>`;
-			player.source = {
-			type: type,
-			title: ttl,
-			sources: a,
-			};
+			let x = document.createElement(type);
+			x.setAttribute("id", "plyrX");
+			x.setAttribute("controls", "controls");
+			let y = document.createElement("SOURCE");
+			y.setAttribute("src", a);
+			y.setAttribute("type", "audio/mp3");
+			x.appendChild(y);
+			x.autoplay = true;
+			document.getElementById("mediaDiv").innerHTML = "";
+			document.getElementById("mediaDiv").appendChild(x);
+			const player = new Plyr('audio', {});
 		}
 		async function getResponse() {
 			const a = localStorage.getItem("indio-source");
@@ -275,23 +280,22 @@
 					result.push(station);
 				}
 			});
-			//renderlist(result);
 			return result;
 		}
 		function about(show = true) {
-		const about = document.getElementById("about");
+		const about = document.getElementById("aboutMe");
 		if (!show) {
 		about.innerHTML = "";
 		} else {
 		about.innerHTML = "";
 		about.innerHTML = `
 		<style>
-		* {
+		.containerA * {
 		margin: 0;
 		padding: 0;
 		box-sizing: border-box;
 		}
-		.container {
+		.containerA {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -342,7 +346,7 @@
 		}
 		</style>`;
 		about.innerHTML += `
-		<div class="container">
+		<div class="containerA">
 			<div class="center"><br>
 				<h2>indio</h2>
 				<br>
