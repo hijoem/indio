@@ -167,6 +167,7 @@
 		<footer>
 			<div id="playerDiv">
 				<p id="nameDiv">Now listening: <strong>Prambors Bandung</strong></p>
+				<p id="stts"></p>
 				<div id="mediaDiv">
 					<audio id="player" crossorigin playsinline autoplay
 						src="https://masima.rastream.com/masima-pramborsjakarta?" type="audio/mp3">
@@ -197,6 +198,18 @@
 			document.getElementById("mediaDiv").innerHTML = "";
 			document.getElementById("mediaDiv").appendChild(x);
 			const player = new Plyr('audio', {});
+			player.on('playing', event => {
+				document.getElementById("stts").innerHTML = `<img src="47tj.gif">`;
+			});
+			player.on('pause', event => {
+				document.getElementById("stts").innerHTML = ``;
+			});
+			player.on('waiting', event => {
+				document.getElementById("stts").innerHTML = `Loading`;
+			});
+			player.on('error', event => {
+				console.log('Error: ' + event);
+			});
 		}
 		async function getResponse() {
 			const a = localStorage.getItem("indio-source");
