@@ -104,6 +104,11 @@
 		transition: transform .2s;
 		box-shadow: inset -5px -5px 4px 0px #ff5200;
 		}
+		.bottom-right {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+		}
 		.btn-items {
 		display: flex;
 		justify-content: center;
@@ -199,13 +204,10 @@
 			document.getElementById("mediaDiv").appendChild(x);
 			const player = new Plyr('audio', {});
 			player.on('playing', event => {
-				document.getElementById("stts").innerHTML = `<img src="47tj.gif">`;
+				document.getElementById("stts").innerHTML = `<img class="bottom-right" src="47tj.gif">`;
 			});
 			player.on('pause', event => {
 				document.getElementById("stts").innerHTML = ``;
-			});
-			player.on('waiting', event => {
-				document.getElementById("stts").innerHTML = `Loading`;
 			});
 			player.on('error', event => {
 				console.log('Error: ' + event);
